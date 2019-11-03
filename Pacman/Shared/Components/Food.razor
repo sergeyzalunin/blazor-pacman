@@ -1,0 +1,14 @@
+﻿<div style="top: @Coordinates.Top; left: @Coordinates.Left;" className=@(Hidden ? "food hidden" : "food" )>
+    <div className="effective-food"></div>
+</div>
+
+@code {
+    [Parameter] public bool Hidden { get; set; }
+    [Parameter] public ushort FoodSize { get; set; }
+    [Parameter] public Position Coordinates { get; set; }
+
+    public void Ate()
+    {
+        Hidden = true;
+    }
+}
