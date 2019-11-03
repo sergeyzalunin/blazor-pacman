@@ -1,74 +1,32 @@
-﻿@inject SvgHelper svgHelper;
-@inject BrowserService Service
+﻿@inherits UnitComponentBase;
 
-<div style="top: @Coordinates.Top; left: @Coordinates.Left;" 
-     className=@("pacman " + GetSideClassName()) >
+<div style="top: @Coordinates.Top; left: @Coordinates.Left;"
+     className=@("pacman " + GetDirectionClassName())>
 
     <svg>@svgHelper.Packman</svg>
 </div>
 
 @code {
-    [Parameter] public Looking Looking { get; set; } = Looking.Right;
+    [Parameter] public Looking Direction { get; set; } = Looking.Right;
     [Parameter] public Position Coordinates { get; set; } = new Position { Top = 0, Left = 0 };
-
-
-    byte border { get; set; } = 20;
-    byte velocity { get; set; } = 20;
-    byte pacmanSize { get; set; } = 60;
-    byte topScoreBoard { get; set; } = 100;
 
     protected async override Task OnInitializedAsync()
     {
         await svgHelper.LoadIconsAsync();
     }
 
-    public string GetSideClassName()
+    public string GetDirectionClassName()
     {
-        string result = string.Empty;
+        string result;
 
-        switch(Looking)
+        switch(Direction)
         {
-            case Looking.Left: result = "left"; break;
             case Looking.Up: result = "up"; break;
+            case Looking.Left: result = "left"; break;
             case Looking.Right: result = "right"; break;
             default: result = "down"; break;
         }
 
         return result;
-    }
-
-    public async void Move()
-    {
-        var currentLeft = Coordinates.Left;
-        var currentTop = Coordinates.Top;
-
-        if(Looking == Looking.Left)
-        {
-            Coordinates.Top = currentTop;
-            Coordinates.Left = Math.Max(currentLeft - velocity, 0);
-        }
-        else
-        {
-            if(Looking == Looking.Up)
-            {
-                Coordinates.Top = Math.Max(currentTop - velocity, 0);
-                Coordinates.Left = currentLeft;
-            }
-            else
-            {
-                var window = await Service.GetDimensions();
-
-                if(Looking == Looking.Right)
-                {
-                    Coordinates.Top = currentTop;
-                    Coordinates.Left = Math.Min(currentLeft + velocity, window.Width - border - pacmanSize);
-                }
-                else
-                {
-                    Coordinates.Top = Math.Min(currentTop + velocity, window.Height - pacmanSize - border - topScoreBoard);
-                    Coordinates.Left = currentLeft;
-                }
-            }
-        }
     }
 }
