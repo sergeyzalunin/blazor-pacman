@@ -1,0 +1,14 @@
+﻿@inherits UnitComponentBase;
+
+<div style="top: @Coordinates.Top; left: @Coordinates.Left;" className=@("ghost " + ColorName)>    
+
+    <svg>@svgHelper.Ghost</svg>
+</div>
+
+@code {
+   
+    [Parameter] public string ColorName { get; set; } = "red";
+    [Parameter] public Looking Direction { get; set; } = Looking.Left;
+    [Parameter] public Position Coordinates { get; set; } = new Position { Top = 300, Left = 300 };
+
+}
