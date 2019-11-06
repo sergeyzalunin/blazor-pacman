@@ -1,14 +1,52 @@
 ﻿@inherits UnitComponentBase;
 
-<div style="top: @Coordinates.Top; left: @Coordinates.Left;" className=@("ghost " + ColorName)>    
+<div style="top: @Coordinates.Top; left: @Coordinates.Left;" className=@("ghost " + ColorName)>
 
     <svg>@svgHelper.Ghost</svg>
 </div>
 
 @code {
-   
+
     [Parameter] public string ColorName { get; set; } = "red";
     [Parameter] public Looking Direction { get; set; } = Looking.Left;
     [Parameter] public Position Coordinates { get; set; } = new Position { Top = 300, Left = 300 };
 
+
+    Timer moveTimer, changeDirectionTimer;
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await svgHelper.LoadIconsAsync();
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await Task.Run(() => 
+        { 
+            moveTimer = new Timer(Move, 100);
+            changeDirectionTimer = new Timer(ChangeDirection, 500);
+        });
+    }
+
+    private void Move()
+    {
+        Move(this.Coordinates, this.Direction);
+    }
+
+    private void ChangeDirection()
+    {
+        var randomValue = new Random(DateTime.Now.Millisecond).NextDouble();
+        var movement = (int)Math.Floor(randomValue * 4);
+        var arrayOfMovement = new Looking[] { Looking.Left, Looking.Up, Looking.Down, Looking.Right };
+
+        this.Direction = arrayOfMovement[movement];
+    }
+
+    public void Kill()
+    {
+        moveTimer.StopTimer();
+        changeDirectionTimer.StopTimer();
+        this.ColorName = "white";
+    }
 }

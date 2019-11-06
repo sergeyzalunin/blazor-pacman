@@ -10,9 +10,22 @@
     [Parameter] public Looking Direction { get; set; } = Looking.Right;
     [Parameter] public Position Coordinates { get; set; } = new Position { Top = 0, Left = 0 };
 
+    Timer moveTimer;
+
+
     protected async override Task OnInitializedAsync()
     {
         await svgHelper.LoadIconsAsync();
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await Task.Run(() => { moveTimer = new Timer(Move, 100); });
+    }
+
+    private void Move()
+    {
+        Move(this.Coordinates, this.Direction);
     }
 
     public string GetDirectionClassName()
@@ -28,5 +41,27 @@
         }
 
         return result;
+    }
+
+
+    public void HandleKeyDown(int keyCode)
+    {
+        int[] arrows = new int[] { 37, 38, 39, 40 };
+
+        if(arrows.Contains(keyCode))
+        {
+            this.Rotate(keyCode);
+        }
+    }
+
+    private void Rotate(int keyCode)
+    {
+        switch(keyCode)
+        {
+            case 37: this.Direction = Looking.Left; break;
+            case 38: this.Direction = Looking.Up; break;
+            case 39: this.Direction = Looking.Right; break;
+            default: this.Direction = Looking.Down; break;
+        }
     }
 }

@@ -40,7 +40,7 @@ namespace Pacman
 			}
 
 			services.AddRazorPages();
-			services.AddServerSideBlazor();
+			services.AddServerSideBlazor().AddCircuitOptions(options => {  options.DetailedErrors = true; });
 			services.AddTransient<SvgHelper>();
 			services.AddScoped<BrowserService>();
 		}

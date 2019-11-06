@@ -1,5 +1,6 @@
 ﻿using Pacman.Data;
 using System;
+using System.Threading.Tasks;
 
 namespace Pacman.Common 
 {
@@ -7,7 +8,7 @@ namespace Pacman.Common
 	{
 		[global::Microsoft.AspNetCore.Components.InjectAttribute] protected SvgHelper svgHelper { get; set; }
 		[global::Microsoft.AspNetCore.Components.InjectAttribute] protected BrowserService Service { get; set; }	
-
+		 
 		protected byte Size { get; set; } = 60;
 		protected byte Border { get; set; } = 20;
 		protected byte Velocity { get; set; } = 20;
