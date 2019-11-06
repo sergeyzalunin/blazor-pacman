@@ -9,10 +9,10 @@ namespace Pacman.Common
 		[global::Microsoft.AspNetCore.Components.InjectAttribute] protected SvgHelper svgHelper { get; set; }
 		[global::Microsoft.AspNetCore.Components.InjectAttribute] protected BrowserService Service { get; set; }	
 		 
-		protected byte Size { get; set; } = 60;
-		protected byte Border { get; set; } = 20;
-		protected byte Velocity { get; set; } = 20;
-		protected byte TopScoreBoard { get; set; } = 100;
+		public byte Size { get; set; } = 60;
+		public byte Border { get; set; } = 20;
+		public byte Velocity { get; set; } = 20;
+		public byte TopScoreBoard { get; set; } = 100;
 		
 		public virtual async void Move(Position coordinates, Looking direction)
 		{
