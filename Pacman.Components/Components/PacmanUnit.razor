@@ -1,0 +1,77 @@
+﻿@inherits UnitComponentBase;
+
+<div style="@GetStyle(Coordinates)"
+     class=@("pacman " + GetDirectionClassName())>
+
+    <svg class="svg_size">@svgHelper.Packman</svg>
+</div>
+
+@code {
+
+    [Parameter] public Looking Direction { get; set; } = Looking.Right;
+    [Parameter] public Position Coordinates { get; set; } = new Position { Top = 0, Left = 100 };
+
+    Timer moveTimer;
+
+    protected async override Task OnInitializedAsync()
+    {
+        await svgHelper.LoadIconsAsync();
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+            await Task.Run(() =>
+            {
+                InteropKeyPress.KeyDown += HandleKeyDown;
+                moveTimer = new Timer(Move, 100);
+            });
+    }
+
+    private void Move()
+    {
+        Move(this.Coordinates, this.Direction);
+    }
+
+    public string GetDirectionClassName()
+    {
+        string result;
+
+        switch(Direction)
+        {
+            case Looking.Up: result = "up"; break;
+            case Looking.Left: result = "left"; break;
+            case Looking.Right: result = "right"; break;
+            default: result = "down"; break;
+        }
+
+        return result;
+    }
+
+
+    public void HandleKeyDown(object sender, ConsoleKey keyCode)
+    {
+        ConsoleKey[] arrows = new ConsoleKey[] { ConsoleKey.NumPad5, ConsoleKey.NumPad1, ConsoleKey.NumPad2, ConsoleKey.NumPad3 };
+
+        if(arrows.Contains(keyCode))
+        {
+            this.Rotate(keyCode);
+        }
+    }
+
+    private void Rotate(ConsoleKey keyCode)
+    {
+        switch(keyCode)
+        {
+            case ConsoleKey.NumPad1: this.Direction = Looking.Left; break;
+            case ConsoleKey.NumPad5: this.Direction = Looking.Up; break;
+            case ConsoleKey.NumPad3: this.Direction = Looking.Right; break;
+            default: this.Direction = Looking.Down; break;
+        }
+    }
+
+    public override void Dispose()
+    {
+        if(moveTimer != null) moveTimer.Dispose();
+    }
+}

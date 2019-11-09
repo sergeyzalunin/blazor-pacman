@@ -1,0 +1,34 @@
+{
+  "version": "1.0",
+  "defaultProvider": "filesystem",
+  "libraries": [
+    {
+      "library": "../Pacman.Components/wwwroot/Assets/Images/ghost.svg",
+      "destination": "wwwroot/Assets/Images/"
+    },
+    {
+      "library": "../Pacman.Components/wwwroot/Assets/Images/pacman.svg",
+      "destination": "wwwroot/Assets/Images/"
+    },
+    {
+      "library": "../Pacman.Components/wwwroot/Scripts/JsInteropKeyPress.js",
+      "destination": "wwwroot/Scripts/"
+    },
+    {
+      "library": "../Pacman.Components/wwwroot/Scripts/JsInteropWindow.js",
+      "destination": "wwwroot/Scripts/"
+    },
+    {
+      "library": "../Pacman.Components/wwwroot/Styles/components",
+      "destination": "wwwroot/Styles/components/"
+    },
+    {
+      "library": "../Pacman.Components/wwwroot/Styles/variables",
+      "destination": "wwwroot/Styles/variables/"
+    },
+    {
+      "library": "../Pacman.Components/wwwroot/Styles/",
+      "destination": "wwwroot/Styles/"
+    }
+  ]
+}
