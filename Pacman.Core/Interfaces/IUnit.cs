@@ -11,9 +11,9 @@ namespace Pacman.Core.Interfaces
 		byte Border { get; set; }
 		byte Velocity { get; set; }
 		byte TopScoreBoard { get; set; }
-		string GetStyle(Position coordinates);
 
+		string GetStyle(Position coordinates);
 		void Move(Position coordinates, Looking direction);
-      event EventHandler OnMoving;
+		void KillUnit();
 	}
 }

@@ -12,6 +12,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="compilerconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="compilerconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Pacman.Components\Pacman.Components.csproj" />
     <ProjectReference Include="..\Pacman.Core\Pacman.Core.csproj" />
   </ItemGroup>

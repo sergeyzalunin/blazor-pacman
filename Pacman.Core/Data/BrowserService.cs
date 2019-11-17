@@ -1,20 +1,29 @@
 ﻿using Microsoft.JSInterop;
+using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Pacman.Core.Data
 {
-	public class BrowserService
+	public class BrowserService: IDisposable
 	{
-		private readonly IJSRuntime _js;
+		private readonly IJSRuntime js;
+		private CancellationTokenSource tokenSource;
 
 		public BrowserService(IJSRuntime js)
 		{
-			_js = js;
+			tokenSource = new CancellationTokenSource();
+			this.js = js;
 		}
 
 		public async Task<BrowserDimension> GetDimensions()
 		{
-			return await _js.InvokeAsync<BrowserDimension>("getDimensions");
+			return await js.InvokeAsync<BrowserDimension>("getDimensions", tokenSource.Token);
+		}
+
+		public void Dispose()
+		{
+			tokenSource.Cancel();
 		}
 	}
 }

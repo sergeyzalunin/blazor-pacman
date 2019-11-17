@@ -4,18 +4,20 @@
 
 <div class="scene">
 
-    @foreach(var food in SceneValue.Foods)
+    @if (SceneValue.Foods != null)
     {
-        <Food FoodValue="@food" />
+        @foreach(var food in SceneValue.Foods)
+        {
+            <Food FoodValue="@food" />
+        }
     }
-
     <Header SceneHeader="@SceneValue.SceneHeader" />
     <PacmanUnit Pacman="@SceneValue.Pacman" />
 
-    <GhostUnit Ghost="@SceneValue.Ghosts[0]" />
-    <GhostUnit Ghost="@SceneValue.Ghosts[1]" />
-    <GhostUnit Ghost="@SceneValue.Ghosts[2]" />
-    <GhostUnit Ghost="@SceneValue.Ghosts[3]" />
+    <GhostUnit Ghost="@SceneValue.Ghosts[0]" ColorName="red" />
+    <GhostUnit Ghost="@SceneValue.Ghosts[1]" ColorName="green" />
+    <GhostUnit Ghost="@SceneValue.Ghosts[2]" ColorName="blue" />
+    <GhostUnit Ghost="@SceneValue.Ghosts[3]" ColorName="orange" />
 </div>
 
 
@@ -23,14 +25,17 @@
    
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        await SceneValue.OnAfterRenderAsync(firstRender);
-
         //This can be called more then once
-        if (!firstRender)
-            return;
+        if (!firstRender) return;
+
+        await SceneValue.OnAfterRenderAsync();
+        SceneValue.OnStateHasChanged += (o, e) => InvokeAsync(StateHasChanged);
 
         var _interopWindow = new Pacman.Core.JsInterop.InteropWindow(JsRuntime);
         await _interopWindow.Initialize();
+
+        SceneValue.Foods = new Pacman.Core.Implementation.FoodFactory().GetFood(SceneValue.Window);
+        StateHasChanged();
     }
     
     public void Dispose()

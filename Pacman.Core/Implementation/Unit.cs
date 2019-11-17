@@ -10,16 +10,17 @@ namespace Pacman.Core.Implementation
 		public SvgHelper SvgHelper { get; set; }
 		public BrowserService Service { get; set; }
 		
-		public byte Size { get; set; } = 60;
-		public byte Border { get; set; } = 20;
-		public byte Velocity { get; set; } = 20;
-		public byte TopScoreBoard { get; set; } = 100;
+		public byte Size { get; set; } = Constants.Size;
+		public byte Border { get; set; } = Constants.Border;
+		public byte Velocity { get; set; } = Constants.Velocity;
+		public byte TopScoreBoard { get; set; } = Constants.TopScoreBoard;
 
-		public event EventHandler OnMoving;
+		public event EventHandler OnStateHasChanged;
 
 		public abstract Task OnInitializedAsync();
 
-		public abstract Task OnAfterRenderAsync(bool firstRender);
+		public abstract Task OnAfterRenderAsync();
+		public abstract void KillUnit();
 
 		public Unit(SvgHelper svgHelper, BrowserService service)
 		{
@@ -40,49 +41,53 @@ namespace Pacman.Core.Implementation
 			if(direction == Looking.Left)
 			{
 				coordinates.Top = currentTop;
-				coordinates.Left = Math.Max(currentLeft - Velocity, 0);
+				coordinates.Left = Math.Max(currentLeft - this.Velocity, 0);
 			}
 			else
 			{
 				if(direction == Looking.Up)
 				{
-					coordinates.Top = Math.Max(currentTop - Velocity, 0);
+					coordinates.Top = Math.Max(currentTop - this.Velocity, this.TopScoreBoard);
 					coordinates.Left = currentLeft;
 				}
 				else
 				{
-					BrowserDimension window = new BrowserDimension();
-					try
-					{
-						window = await Service.GetDimensions();
-					}
-					catch { return; }
+					BrowserDimension window = await GetBrowserDimensionAsync();
 
 					if(direction == Looking.Right)
 					{
 						coordinates.Top = currentTop;
-						coordinates.Left = Math.Min(currentLeft + Velocity, window.Width - Border - Size);
+						coordinates.Left = Math.Min(currentLeft + this.Velocity, window.Width - this.Size - this.Border);
 					}
 					else
 					{
-						coordinates.Top = Math.Min(currentTop + Velocity, window.Height - Size - Border - TopScoreBoard);
+						coordinates.Top = Math.Min(currentTop + this.Velocity, window.Height - this.Size - this.Border);
 						coordinates.Left = currentLeft;
 					}
 				}
 			}
 
-			 Moving();
+			StateHasChanging();
+		}
+
+		public async Task<BrowserDimension> GetBrowserDimensionAsync()
+		{
+			BrowserDimension window;
+			try
+			{
+				window = await Service.GetDimensions();
+			}
+			catch //TODO: Try to find better way to handle this
+			{
+				window = new BrowserDimension();
+			}
+			return window;
 		}
 		 
-      protected virtual void Moving()
+      protected virtual void StateHasChanging()
       {  
-         OnMoving?.Invoke(this, EventArgs.Empty);  
+         OnStateHasChanged?.Invoke(this, EventArgs.Empty);  
       }  
-
-		public void OnCollide()
-		{
-			throw new NotImplementedException();
-		}
 
 		public abstract void Dispose();
 	}

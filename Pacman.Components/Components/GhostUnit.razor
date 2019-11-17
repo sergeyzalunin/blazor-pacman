@@ -7,6 +7,7 @@
 @code {
 
    [Parameter] public IGhost Ghost { get; set; }
+   [Parameter] public string ColorName { get { return Ghost.ColorName; } set { Ghost.ColorName = value; } }
 
     protected async override Task OnInitializedAsync()
     {
@@ -15,9 +16,10 @@
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {        
-        await Ghost.OnAfterRenderAsync(firstRender);
-        if (firstRender)
-            Ghost.OnMoving += (o, e) => InvokeAsync(StateHasChanged);
+        if (!firstRender) return;
+
+        await Ghost.OnAfterRenderAsync();
+        Ghost.OnStateHasChanged += (o, e) => InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()

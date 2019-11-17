@@ -17,9 +17,10 @@
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        await Pacman.OnAfterRenderAsync(firstRender);
-        if (firstRender)
-            Pacman.OnMoving += (o, e) => InvokeAsync(StateHasChanged);
+        if (!firstRender) return;
+
+        await Pacman.OnAfterRenderAsync();
+        Pacman.OnStateHasChanged += (o, e) => InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()

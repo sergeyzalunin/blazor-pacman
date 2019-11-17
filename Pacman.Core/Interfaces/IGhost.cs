@@ -7,7 +7,5 @@ namespace Pacman.Core.Interfaces
 		string ColorName { get; set; }
 		Looking Direction { get; set; }
 		Position Coordinates { get; set; }
-
-		void Kill();
 	}
 }

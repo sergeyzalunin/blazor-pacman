@@ -10,8 +10,9 @@ namespace Pacman.Core.Implementation
 {
 	public class Pacman : Unit, IPacman
 	{
+		Looking interimDirection = Looking.Right;
 		public Looking Direction { get; set; } = Looking.Right;
-		public Position Coordinates { get; set; } = new Position { Top = 0, Left = 100 };
+		public Position Coordinates { get; set; } = new Position { Top = Constants.TopScoreBoard, Left = 100 };
 
 		Timer moveTimer;
 		
@@ -24,18 +25,18 @@ namespace Pacman.Core.Implementation
 			await SvgHelper.LoadIconsAsync();
 		}
 
-		public async override Task OnAfterRenderAsync(bool firstRender)
+		public async override Task OnAfterRenderAsync()
 		{
-			if(firstRender)
-				await Task.Run(() =>
-				{
-					InteropKeyPress.KeyDown += HandleKeyDown;
-					moveTimer = new Timer(Move, 100);
-				});
+			await Task.Run(() =>
+			{
+				InteropKeyPress.KeyDown += HandleKeyDown;
+				moveTimer = new Timer(Move, Constants.MoveSpeed);
+			});
 		}
 
 		private void Move()
 		{
+			this.Direction = interimDirection;
 			Move(this.Coordinates, this.Direction);
 		}
 
@@ -53,7 +54,6 @@ namespace Pacman.Core.Implementation
 
 			return result;
 		}
-
 
 		private void HandleKeyDown(object sender, ConsoleKey keyCode)
 		{
@@ -79,11 +79,16 @@ namespace Pacman.Core.Implementation
 		{
 			switch(keyCode)
 			{
-				case ConsoleKey.NumPad3: case ConsoleKey.RightArrow: this.Direction = Looking.Right; break;
-				case ConsoleKey.NumPad1: case ConsoleKey.LeftArrow: this.Direction = Looking.Left; break;
-				case ConsoleKey.NumPad5: case ConsoleKey.UpArrow: this.Direction = Looking.Up; break;
-				default: this.Direction = Looking.Down; break;
+				case ConsoleKey.NumPad3: case ConsoleKey.RightArrow: this.interimDirection = Looking.Right; break;
+				case ConsoleKey.NumPad1: case ConsoleKey.LeftArrow: this.interimDirection = Looking.Left; break;
+				case ConsoleKey.NumPad5: case ConsoleKey.UpArrow: this.interimDirection = Looking.Up; break;
+				default: this.interimDirection = Looking.Down; break;
 			}
+		}
+
+		public override void KillUnit()
+		{
+			moveTimer.StopTimer();
 		}
 
 		public override void Dispose()

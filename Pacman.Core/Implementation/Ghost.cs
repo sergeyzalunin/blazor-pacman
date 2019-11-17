@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Pacman.Core.Common;
+﻿using Pacman.Core.Common;
 using Pacman.Core.Data;
 using Pacman.Core.Interfaces;
 using System;
@@ -24,14 +23,13 @@ namespace Pacman.Core.Implementation
 			await SvgHelper.LoadIconsAsync();
 		}
 
-		public async override Task OnAfterRenderAsync(bool firstRender)
+		public async override Task OnAfterRenderAsync()
 		{
-			if(firstRender)
-				await Task.Run(() =>
-				{
-					moveTimer = new Timer(Move, 100);
-					changeDirectionTimer = new Timer(ChangeDirection, 500);
-				});
+			await Task.Run(() =>
+			{
+				moveTimer = new Timer(Move, Constants.MoveSpeed);
+				changeDirectionTimer = new Timer(ChangeDirection, 500);
+			});
 		}
 
 		private void Move()
@@ -48,7 +46,7 @@ namespace Pacman.Core.Implementation
 			this.Direction = arrayOfMovement[movement];
 		}
 
-		public void Kill()
+		public override void KillUnit()
 		{
 			moveTimer.StopTimer();
 			changeDirectionTimer.StopTimer();

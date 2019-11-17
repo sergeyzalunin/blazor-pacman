@@ -49,7 +49,6 @@ namespace Pacman
 			services.AddScoped<IPacman, Pacman.Core.Implementation.Pacman>();
 			services.AddScoped<ISceneHeader, SceneHeader>();
 			services.AddScoped<IGhost[]>(new GhostFactory().GetGhosts);
-			services.AddScoped<IFood[]>(new FoodFactory().GetFood);
 			services.AddScoped<IScene, Scene>();
 		}
 

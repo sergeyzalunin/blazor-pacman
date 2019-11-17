@@ -7,7 +7,7 @@ namespace Pacman.Core.Implementation
 	public class Food : IFood
 	{
 		public bool Hidden { get; set; }
-		public ushort Size { get; set; } = 60;
+		public ushort Size { get; set; } = Constants.Size;
 		public Position Coordinates { get; set; }
 
 		public void Ate()

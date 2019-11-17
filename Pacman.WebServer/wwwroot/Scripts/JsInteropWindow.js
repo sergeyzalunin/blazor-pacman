@@ -12,17 +12,11 @@ window.onresize = () => {
     );
 };
 
-/*window.JsInteropWindow = {
+window.JsInteropWindow = {
 
     initialize: () => {
         window.DotNet.invokeMethodAsync(
             'Pacman.Core', 'WindowInitialized', window.innerWidth, window.innerHeight
         );
     }
-};*/
-
-window.onload = () => {
-    window.DotNet.invokeMethodAsync(
-        'Pacman.Core', 'WindowInitialized', window.innerWidth, window.innerHeight
-    );
 };

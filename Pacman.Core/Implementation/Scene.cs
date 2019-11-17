@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using System;
+using System.Threading.Tasks;
 using Pacman.Core.Common;
 using Pacman.Core.Interfaces;
 
@@ -10,42 +10,33 @@ namespace Pacman.Core.Implementation
 		bool crashed;		
 		Timer crashTimer, lookingForEatTimer;
 
-		[Inject]
+		public event EventHandler OnStateHasChanged;
+
 		public IWindow Window { get; set; }
-
-		[Inject]
 		public IPacman Pacman { get; set; }
-
-		[Inject]
 		public IGhost[] Ghosts { get; set; }
-
-		[Inject]
 		public ISceneHeader SceneHeader { get; set; }
-
-		[Inject]
 		public IFood[] Foods { get; set; }
 
-		public Scene(IWindow window, ISceneHeader sceneHeader, IPacman pacman, IGhost[] ghosts, IFood[] foods)
+		public Scene(IWindow window, ISceneHeader sceneHeader, IPacman pacman, IGhost[] ghosts)
 		{
 			this.Window = window;
 			this.SceneHeader = sceneHeader;
 			this.Pacman = pacman;
 			this.Ghosts = ghosts;
-			this.Foods = foods;
 		}
-
 
 		public Task OnInitializedAsync()
 		{
 			throw new System.NotImplementedException();
 		}
 
-		public async Task OnAfterRenderAsync(bool firstRender)
+		public async Task OnAfterRenderAsync()
 		{
 			await Task.Run(() =>
 			{
 				crashTimer = new Timer(LookForCrash, 100);
-				lookingForEatTimer = new Timer(LookingForEat, 500);
+				lookingForEatTimer = new Timer(LookingForEat, 300);
 			});
 		}
 
@@ -54,7 +45,7 @@ namespace Pacman.Core.Implementation
 			for(int i = 0; i < 4; i++)
 			{
 				var currentGhost = Ghosts[i];
-				currentGhost.Kill();
+				currentGhost.KillUnit();
 			}
 		}
 
@@ -85,7 +76,9 @@ namespace Pacman.Core.Implementation
 				{
 					SceneHeader.GameOver();
 					crashTimer.StopTimer();
-					this.KillGhosts();
+					KillGhosts();
+					Pacman.KillUnit();
+					StateHasChanging();
 					break;
 				}
 			}
@@ -95,16 +88,16 @@ namespace Pacman.Core.Implementation
 		{
 			var pacmanX = Pacman.Coordinates.Left;
 			var pacmanY = Pacman.Coordinates.Top;
-			var pacmanLastX = Pacman.Coordinates.Left + Pacman.Size / 2;
-			var pacmanLastY = Pacman.Coordinates.Top + Pacman.Size / 2;
+			var pacmanLastX = pacmanX + Pacman.Size / 2;
+			var pacmanLastY = pacmanY + Pacman.Size / 2;
 
 			for(var i = 0; i < Foods.Length; i++)
 			{
 				var currentFood = Foods[i];
 				var currentFoodX = currentFood.Coordinates.Left;
 				var currentFoodY = currentFood.Coordinates.Top;
-				var currentFoodLastX = currentFood.Coordinates.Left + currentFood.Size / 2;
-				var currentFoodLastY = currentFood.Coordinates.Top + currentFood.Size / 2;
+				var currentFoodLastX = currentFoodX + currentFood.Size / 2;
+				var currentFoodLastY = currentFoodY + currentFood.Size / 2;
 
 				if((pacmanX >= currentFoodX && pacmanX <= currentFoodLastX) || (pacmanLastX >= currentFoodX && pacmanLastX <= currentFoodLastX))
 				{
@@ -114,6 +107,7 @@ namespace Pacman.Core.Implementation
 						{
 							currentFood.Ate();
 							SceneHeader.IncreasePoints();
+							StateHasChanging();
 						}
 					}
 				}
@@ -121,9 +115,15 @@ namespace Pacman.Core.Implementation
 				if(this.crashed)
 				{
 					lookingForEatTimer.StopTimer();
+					StateHasChanging();
 				}
 			}
 		}
+		 
+      protected virtual void StateHasChanging()
+      {  
+         OnStateHasChanged?.Invoke(this, EventArgs.Empty);  
+      }  
 		
 		public void OnCollide()
 		{
