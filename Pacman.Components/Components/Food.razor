@@ -1,19 +1,7 @@
-﻿<div style="@GetStyle()" class=@(Hidden ? "food hidden" : "food" )>
+﻿<div style="@FoodValue.GetStyle()" class=@(FoodValue.Hidden ? "food hidden" : "food" )>
     <div class="effective-food"></div>
 </div>
 
 @code {
-    [Parameter] public bool Hidden { get; set; }
-    [Parameter] public ushort Size { get; set; }
-    [Parameter] public Position Coordinates { get; set; }
-
-    public void Ate()
-    {
-        Hidden = true;
-    }
-
-    string GetStyle()
-    {
-        return string.Format("top: {0}px; left: {1}px", Coordinates.Top, Coordinates.Left);
-    }
+   [Parameter] public IFood FoodValue { get; set; }
 }

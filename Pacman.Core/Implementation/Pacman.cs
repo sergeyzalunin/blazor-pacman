@@ -1,0 +1,94 @@
+﻿using Pacman.Core.Common;
+using Pacman.Core.Data;
+using Pacman.Core.Interfaces;
+using Pacman.Core.JsInterop;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Pacman.Core.Implementation
+{
+	public class Pacman : Unit, IPacman
+	{
+		public Looking Direction { get; set; } = Looking.Right;
+		public Position Coordinates { get; set; } = new Position { Top = 0, Left = 100 };
+
+		Timer moveTimer;
+		
+		public Pacman(SvgHelper svgHelper, BrowserService service): base(svgHelper, service)
+		{
+		}
+
+		public async override Task OnInitializedAsync()
+		{
+			await SvgHelper.LoadIconsAsync();
+		}
+
+		public async override Task OnAfterRenderAsync(bool firstRender)
+		{
+			if(firstRender)
+				await Task.Run(() =>
+				{
+					InteropKeyPress.KeyDown += HandleKeyDown;
+					moveTimer = new Timer(Move, 100);
+				});
+		}
+
+		private void Move()
+		{
+			Move(this.Coordinates, this.Direction);
+		}
+
+		public string GetDirectionClassName()
+		{
+			string result;
+
+			switch(Direction)
+			{
+				case Looking.Up: result = "up"; break;
+				case Looking.Left: result = "left"; break;
+				case Looking.Right: result = "right"; break;
+				default: result = "down"; break;
+			}
+
+			return result;
+		}
+
+
+		private void HandleKeyDown(object sender, ConsoleKey keyCode)
+		{
+			ConsoleKey[] arrows = new ConsoleKey[] 
+			{ 
+				ConsoleKey.NumPad5, 
+				ConsoleKey.NumPad1, 
+				ConsoleKey.NumPad2, 
+				ConsoleKey.NumPad3,
+				ConsoleKey.LeftArrow,
+				ConsoleKey.UpArrow,
+				ConsoleKey.RightArrow,
+				ConsoleKey.DownArrow
+			};
+
+			if(arrows.Contains(keyCode))
+			{
+				this.Rotate(keyCode);
+			}
+		}
+
+		private void Rotate(ConsoleKey keyCode)
+		{
+			switch(keyCode)
+			{
+				case ConsoleKey.NumPad3: case ConsoleKey.RightArrow: this.Direction = Looking.Right; break;
+				case ConsoleKey.NumPad1: case ConsoleKey.LeftArrow: this.Direction = Looking.Left; break;
+				case ConsoleKey.NumPad5: case ConsoleKey.UpArrow: this.Direction = Looking.Up; break;
+				default: this.Direction = Looking.Down; break;
+			}
+		}
+
+		public override void Dispose()
+		{
+			if(moveTimer != null) moveTimer.Dispose();
+		}
+	}
+}

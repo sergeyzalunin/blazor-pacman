@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 
-namespace Pacman.Components.Common
+namespace Pacman.Core.JsInterop
 {
     /// <summary>E:\VISUAL STUDIO APPS\Blazor\blazor-pacman\Pacman\wwwroot\JsInterop\
     /// Proxy for receiving key press events from JavaScript.

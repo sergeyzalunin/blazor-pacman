@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Pacman.Components.Data;
+using Pacman.Core.Data;
+using Pacman.Core.Implementation;
+using Pacman.Core.Interfaces;
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -43,6 +45,12 @@ namespace Pacman
 			services.AddServerSideBlazor().AddCircuitOptions(options => {  options.DetailedErrors = true; });
 			services.AddTransient<SvgHelper>();
 			services.AddScoped<BrowserService>();
+			services.AddScoped<IWindow, BrowserWindow>();
+			services.AddScoped<IPacman, Pacman.Core.Implementation.Pacman>();
+			services.AddScoped<ISceneHeader, SceneHeader>();
+			services.AddScoped<IGhost[]>(new GhostFactory().GetGhosts);
+			services.AddScoped<IFood[]>(new FoodFactory().GetFood);
+			services.AddScoped<IScene, Scene>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

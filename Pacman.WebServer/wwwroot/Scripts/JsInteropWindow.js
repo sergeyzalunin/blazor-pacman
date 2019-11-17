@@ -4,3 +4,25 @@
         height: window.innerHeight
     };
 };
+
+window.onresize = () => {
+
+    window.DotNet.invokeMethodAsync(
+        'Pacman.Core', 'UpdateWindowSize', window.innerWidth, window.innerHeight
+    );
+};
+
+/*window.JsInteropWindow = {
+
+    initialize: () => {
+        window.DotNet.invokeMethodAsync(
+            'Pacman.Core', 'WindowInitialized', window.innerWidth, window.innerHeight
+        );
+    }
+};*/
+
+window.onload = () => {
+    window.DotNet.invokeMethodAsync(
+        'Pacman.Core', 'WindowInitialized', window.innerWidth, window.innerHeight
+    );
+};

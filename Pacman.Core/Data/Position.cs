@@ -1,4 +1,4 @@
-﻿namespace Pacman.Components.Data
+﻿namespace Pacman.Core.Data
 {
 	public class Position
 	{

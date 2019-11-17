@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Pacman.Components.Data
+namespace Pacman.Core.Data
 {
 	public class SvgHelper
 	{

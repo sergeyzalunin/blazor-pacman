@@ -1,7 +1,7 @@
 ﻿using Microsoft.JSInterop;
 using System.Threading.Tasks;
 
-namespace Pacman.Components.Data
+namespace Pacman.Core.Data
 {
 	public class BrowserService
 	{

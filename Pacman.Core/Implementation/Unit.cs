@@ -1,19 +1,31 @@
-﻿using System;
-using Microsoft.AspNetCore.Components;
-using Pacman.Components.Data;
+﻿using Pacman.Core.Data;
+using Pacman.Core.Interfaces;
+using System;
+using System.Threading.Tasks;
 
-namespace Pacman.Components.Common
+namespace Pacman.Core.Implementation
 {
-	public abstract class UnitComponentBase : ComponentBase, IDisposable
+	public abstract class Unit : IUnit, IDisposable
 	{
-		[global::Microsoft.AspNetCore.Components.InjectAttribute] protected SvgHelper svgHelper { get; set; }
-		[global::Microsoft.AspNetCore.Components.InjectAttribute] protected BrowserService Service { get; set; }
-
+		public SvgHelper SvgHelper { get; set; }
+		public BrowserService Service { get; set; }
+		
 		public byte Size { get; set; } = 60;
 		public byte Border { get; set; } = 20;
 		public byte Velocity { get; set; } = 20;
 		public byte TopScoreBoard { get; set; } = 100;
 
+		public event EventHandler OnMoving;
+
+		public abstract Task OnInitializedAsync();
+
+		public abstract Task OnAfterRenderAsync(bool firstRender);
+
+		public Unit(SvgHelper svgHelper, BrowserService service)
+		{
+			this.SvgHelper = svgHelper;
+			this.Service = service;
+		}
 
 		public string GetStyle(Position coordinates)
 		{
@@ -58,7 +70,18 @@ namespace Pacman.Components.Common
 					}
 				}
 			}
-		   await InvokeAsync(StateHasChanged);
+
+			 Moving();
+		}
+		 
+      protected virtual void Moving()
+      {  
+         OnMoving?.Invoke(this, EventArgs.Empty);  
+      }  
+
+		public void OnCollide()
+		{
+			throw new NotImplementedException();
 		}
 
 		public abstract void Dispose();

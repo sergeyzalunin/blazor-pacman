@@ -1,24 +1,8 @@
 ﻿<div class="header">
     <span class="left title">PACMAN</span>
-    <span class="right score">SCORE: <span class="points">@GetPoints()</span></span>
+    <span class="right score">SCORE: <span class="points">@SceneHeader.GetPoints()</span></span>
 </div>
 
 @code {
-    long Points { get; set; }
-    bool Playing { get; set; } = true;
-
-    string GetPoints()
-    {
-        return Playing ? Points.ToString() : "GAME OVER";
-    }
-
-    public void Increase()
-    {
-        Points++;
-    }
-
-    public void GameOver()
-    {
-        Playing = false;
-    }
+   [Parameter] public Pacman.Core.Interfaces.ISceneHeader SceneHeader { get; set; }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Timers;
 
-namespace Pacman.Components.Common
+namespace Pacman.Core.Common
 {
 	public class Timer : IDisposable
 	{
